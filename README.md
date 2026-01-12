@@ -72,13 +72,13 @@ curl http://localhost:4000/api/items/<id>
 
 Update:
 
-curl -X PUT http://localhost:4000/api/items/<id> \
+curl -X PUT http://localhost:4000/api/items/696504128bf16428185c2295 \
   -H 'Content-Type: application/json' \
   -d '{"price":12.5}'
 
 Delete:
 
-curl -X DELETE http://localhost:4000/api/items/<id>
+curl -X DELETE http://localhost:4000/api/items/696504128bf16428185c2295
 
 You can import these into Postman or any HTTP client.
 
