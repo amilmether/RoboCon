@@ -100,6 +100,21 @@ You can import these into Postman or any HTTP client.
 - Use a process manager (PM2) or a platform (Render, Railway, AWS) for a reliable deployment.
 - Add monitoring and backups for production databases.
 
+### Vercel (Serverless)
+
+- This project can be deployed to Vercel as a single serverless function that handles `/api/*` routes.
+- **Important:** Set the `MONGO_URI` environment variable in Vercel (Project Settings → Environment Variables) for production.
+
+Deploy steps:
+
+1. (Optional) Install the Vercel CLI: `npm i -g vercel`
+2. Run `vercel` in the project root and follow prompts, or push to a connected Git repo to trigger automatic deployments.
+
+Notes:
+
+- In production the app requires `MONGO_URI` — the app will refuse to start in production without it. For local development you can keep using the in-memory DB.
+- The base API path remains `/api/items` (e.g. `https://<your-deploy>.vercel.app/api/items`).
+
 ---
 
 ## Next steps
