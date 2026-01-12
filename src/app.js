@@ -27,6 +27,9 @@ function createApp() {
   // Body parser
   app.use(express.json());
 
+  // Redirect site root to the API items route for convenience
+  app.get('/', (req, res) => res.redirect('/api/items'));
+
   // API routes
   app.use('/api/items', itemRoutes);
 
