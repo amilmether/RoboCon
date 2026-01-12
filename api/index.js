@@ -19,7 +19,14 @@ module.exports = async (req, res) => {
     return res.end('OK');
   }
 
+  // If running in production, ensure MONGO_URI is set to avoid throwing
   if (!appPromise) {
+    if (process.env.NODE_ENV === 'production' && !process.env.MONGO_URI) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify({ error: 'MONGO_URI is not set in production environment' }));
+    }
+
     appPromise = (async () => {
       await connectDB(process.env.MONGO_URI);
       const app = createApp();
@@ -27,6 +34,17 @@ module.exports = async (req, res) => {
     })();
   }
 
-  const app = await appPromise;
+  let app;
+  try {
+    app = await appPromise;
+  } catch (err) {
+    // Reset appPromise so a next invocation can retry initialization
+    appPromise = undefined;
+    console.error('Failed to initialize app:', err && err.message ? err.message : err);
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ error: 'Failed to initialize app', details: err && err.message ? err.message : String(err) }));
+  }
+
   return app(req, res);
 };
