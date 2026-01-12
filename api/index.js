@@ -1,19 +1,18 @@
-const serverless = require('serverless-http');
 const createApp = require('../src/app');
 const { connectDB } = require('../src/config/db');
 
-// Lazy-initialized handler: connect DB on cold start and cache handler across warm invocations
-let handlerPromise;
+// Lazy-initialized app: connect DB on cold start and cache app across warm invocations
+let appPromise;
 
 module.exports = async (req, res) => {
-  if (!handlerPromise) {
-    handlerPromise = (async () => {
+  if (!appPromise) {
+    appPromise = (async () => {
       await connectDB(process.env.MONGO_URI);
       const app = createApp();
-      return serverless(app);
+      return app;
     })();
   }
 
-  const handler = await handlerPromise;
-  return handler(req, res);
+  const app = await appPromise;
+  return app(req, res);
 };
